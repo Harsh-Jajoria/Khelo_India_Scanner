@@ -12,9 +12,9 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
         android:rotationY="180"
-        android:adjustViewBounds="true"
         android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,14 +23,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scan the code to check"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgLogo"
         android:layout_margin="20dp"
+        android:text="@string/scan_the_code_to_check"
+        android:textColor="@color/primary_text"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/primary_text"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgLogo" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnScanner"
@@ -49,7 +49,8 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="15dp">
+            android:paddingVertical="15dp"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="28dp"

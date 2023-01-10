@@ -8,4 +8,5 @@
     <string name="error_app_name_unavailable" translatable="false">App name is not set.</string>
     <string name="error_default_message" translatable="false">Failed to scan code: %1$s</string>
     <string name="scan_code">Scan Code</string>
+    <string name="scan_the_code_to_check">Scan the code to check</string>
 </resources>
