@@ -1,6 +1,6 @@
 package com.axepert.kheloindiaqrscanner.network;
 
-import com.axepert.kheloindiaqrscanner.Constants;
+import com.axepert.kheloindiaqrscanner.utils.Constants;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -13,7 +13,7 @@ public class ApiClient {
     public static Retrofit getRetrofit() {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
                 .build();

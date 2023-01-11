@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Khelo India QR Scanner</string>
+    <string name="app_name">KIYG 2022</string>
     <string name="allow_manual_input" translatable="false">Allow input code manually</string>
     <string name="scan_barcode_button" translatable="false">Scan Barcode</string>
     <string name="barcode_result" translatable="false">Barcode detected.\n%1$s</string>
@@ -9,4 +9,9 @@
     <string name="error_default_message" translatable="false">Failed to scan code: %1$s</string>
     <string name="scan_code">Scan Code</string>
     <string name="scan_the_code_to_check">Scan the code to check</string>
+    <string name="khelo_india">KHELO INDIA\nYOUTH GAMES 2022</string>
+    <string name="demo_name">Phani kumar marisetty</string>
+    <string name="login_text">WELCOME\nLOGIN TO CONTINUE</string>
+    <string name="email">Email Address</string>
+    <string name="password">Password</string>
 </resources>

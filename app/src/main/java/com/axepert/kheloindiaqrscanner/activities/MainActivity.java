@@ -1,31 +1,32 @@
-package com.axepert.kheloindiaqrscanner;
+package com.axepert.kheloindiaqrscanner.activities;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.axepert.kheloindiaqrscanner.R;
 import com.axepert.kheloindiaqrscanner.databinding.ActivityMainBinding;
-import com.google.android.material.snackbar.Snackbar;
+import com.axepert.kheloindiaqrscanner.utils.Constants;
+import com.axepert.kheloindiaqrscanner.utils.PreferenceManager;
 import com.google.mlkit.common.MlKitException;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     private static final String TAG = "MainActivity";
+    private PreferenceManager preferenceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +34,41 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        preferenceManager = new PreferenceManager(this);
+        setProfileValues();
         setListener();
-        startScanner();
+    }
+
+    private void setProfileValues() {
+        String imageUrl = String.format(
+                "%s/%s",
+                preferenceManager.getString(Constants.KEY_IMAGE_BASE_URL),
+                preferenceManager.getString(Constants.KEY_IMAGE));
+
+        binding.imgProfile.setAlpha(0f);
+        Picasso.get().load(imageUrl).noFade().into(binding.imgProfile, new Callback() {
+            @Override
+            public void onSuccess() {
+                binding.imgProfile.animate().alpha(1f).setDuration(300).start();
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+        binding.tvName.setText(preferenceManager.getString(Constants.KEY_USERNAME));
+
     }
 
     private void setListener() {
         binding.btnScanner.setOnClickListener(v -> startScanner());
+        binding.imgLogout.setOnClickListener(v -> {
+            preferenceManager.clear();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        });
     }
 
     private void startScanner() {
@@ -49,15 +79,15 @@ public class MainActivity extends AppCompatActivity {
                 .startScan()
                 .addOnSuccessListener(barcode -> {
                     Log.d(TAG, "Success: " + getSuccessfulMessage(barcode));
-                    successSnackBar(getSuccessfulMessage(barcode));
+                    Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                    intent.putExtra(Constants.KEY_RESULT, getSuccessfulMessage(barcode));
+                    startActivity(intent);
                 })
                 .addOnFailureListener(e -> {
                     Log.d(TAG, "Failure: " + getErrorMessage(e));
-                    errorSnackBar(getErrorMessage(e));
                 })
                 .addOnCanceledListener(() -> {
                     Log.d(TAG, "Error: " + getString(R.string.error_scanner_cancelled));
-                    errorSnackBar(getString(R.string.error_scanner_cancelled));
                 });
     }
 
@@ -95,74 +125,6 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             return e.getMessage();
-        }
-    }
-
-    private void warningSnackBar(String msg) {
-        Snackbar snackbar = Snackbar.make(binding.getRoot(), "", 5000);
-        View view = LayoutInflater.from(this).inflate(R.layout.warning_layout, findViewById(R.id.snackBarRootLayout));
-        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
-        Snackbar.SnackbarLayout snackBarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-        snackBarLayout.setPadding(0, 0, 0, 0);
-
-        TextView title = view.findViewById(R.id.tvTitle);
-        TextView message = view.findViewById(R.id.tvMessage);
-        ImageView imgClose = view.findViewById(R.id.imgClose);
-
-        imgClose.setOnClickListener(v -> snackbar.dismiss());
-
-        message.setText(msg);
-
-        snackBarLayout.addView(view);
-        snackbar.setAnchorView(binding.btnScanner);
-        snackbar.show();
-    }
-
-    private void errorSnackBar(String error) {
-        Snackbar snackbar = Snackbar.make(binding.getRoot(), error, 5000);
-        View view = LayoutInflater.from(this).inflate(R.layout.error_layout, findViewById(R.id.snackBarRootLayout));
-        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
-        Snackbar.SnackbarLayout snackBarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-        snackBarLayout.setPadding(0, 0, 0, 0);
-
-        TextView title = view.findViewById(R.id.tvTitle);
-        TextView message = view.findViewById(R.id.tvMessage);
-        ImageView imgClose = view.findViewById(R.id.imgClose);
-
-        imgClose.setOnClickListener(v -> snackbar.dismiss());
-
-        message.setText(error);
-
-        snackBarLayout.addView(view);
-        snackbar.setAnchorView(binding.btnScanner);
-        snackbar.show();
-    }
-
-    private void successSnackBar(String msg) {
-        Snackbar snackbar = Snackbar.make(binding.getRoot(), "", Snackbar.LENGTH_INDEFINITE);
-        View view = LayoutInflater.from(this).inflate(R.layout.success_layout, findViewById(R.id.snackBarRootLayout));
-        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
-        Snackbar.SnackbarLayout snackBarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-        snackBarLayout.setPadding(0, 0, 0, 0);
-
-        TextView title = view.findViewById(R.id.tvTitle);
-        TextView message = view.findViewById(R.id.tvMessage);
-        ImageView imgClose = view.findViewById(R.id.imgClose);
-
-        imgClose.setOnClickListener(v -> snackbar.dismiss());
-
-        message.setText(msg);
-
-        snackBarLayout.addView(view);
-        snackbar.setAnchorView(binding.btnScanner);
-        snackbar.show();
-    }
-
-    private void checkAccess() {
-        try {
-
-        } catch (Exception e) {
-            errorSnackBar("Error : " + e.getMessage());
         }
     }
 
