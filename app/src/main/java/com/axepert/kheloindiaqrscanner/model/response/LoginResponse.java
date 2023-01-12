@@ -6,11 +6,13 @@ public class LoginResponse {
     public Data data;
 
     public class Data {
+        public String id;
         public String name;
         public String image;
         public String email;
         public String phone;
         public String access_code;
+        public String department;
         public String base_url;
 
         public String getName() {
@@ -35,6 +37,14 @@ public class LoginResponse {
 
         public String getBase_url() {
             return base_url;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getDepartment() {
+            return department;
         }
     }
 }

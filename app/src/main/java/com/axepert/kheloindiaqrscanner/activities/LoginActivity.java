@@ -64,8 +64,10 @@ public class LoginActivity extends AppCompatActivity {
                             preferenceManager.putString(Constants.KEY_EMAIL, response.body().data.getEmail());
                             preferenceManager.putString(Constants.KEY_PHONE, response.body().data.getPhone());
                             preferenceManager.putString(Constants.KEY_IMAGE, response.body().data.getImage());
+                            preferenceManager.putString(Constants.KEY_USER_ID, response.body().data.getId());
                             preferenceManager.putString(Constants.KEY_ACCESS_CODE, response.body().data.getAccess_code());
                             preferenceManager.putString(Constants.KEY_IMAGE_BASE_URL, response.body().data.getBase_url());
+                            preferenceManager.putString(Constants.KEY_DEPARTMENT, response.body().data.getDepartment());
                             preferenceManager.putBoolean(Constants.KEY_IS_LOGIN, true);
                             isLoading(false);
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);

@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.tvName.setText(preferenceManager.getString(Constants.KEY_USERNAME));
-
+        binding.tvDepartment.setText(preferenceManager.getString(Constants.KEY_DEPARTMENT));
     }
 
     private void setListener() {
@@ -102,15 +102,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getSuccessfulMessage(Barcode barcode) {
-        String barcodeValue =
-                String.format(
-                        Locale.getDefault(),
-                        "Display Value: %s\nRaw Value: %s\nFormat: %s\nValue Type: %s",
-                        barcode.getDisplayValue(),
-                        barcode.getRawValue(),
-                        barcode.getFormat(),
-                        barcode.getValueType());
-        return getString(R.string.barcode_result, barcodeValue);
+        String barcodeValue = barcode.getDisplayValue();
+        return barcodeValue;
     }
 
     private String getErrorMessage(Exception e) {

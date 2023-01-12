@@ -12,4 +12,5 @@ public class Constants {
     public static final String KEY_RESULT = "result";
     public static final String KEY_IMAGE_BASE_URL = "imageBaseUrl";
     public static final String KEY_USER_ID = "userId";
+    public static final String KEY_DEPARTMENT = "department";
 }
