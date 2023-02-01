@@ -1,5 +1,6 @@
 package com.axepert.kheloindiaqrscanner.repository;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,12 +16,10 @@ import retrofit2.Response;
 
 public class LoginActivityRepository {
     public ApiServices apiServices;
-    private String emailInput = "harsh8725398@gmail.com", passwordInput = "qwerty";
 
     public LoginActivityRepository() {
         apiServices = ApiClient.getRetrofit().create(ApiServices.class);
     }
-
 
     public LiveData<LoginResponse> login(String email, String password) {
         MutableLiveData<LoginResponse> data = new MutableLiveData<>();
@@ -29,7 +28,9 @@ public class LoginActivityRepository {
         apiServices.login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                data.postValue(response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    data.postValue(response.body());
+                }
             }
 
             @Override

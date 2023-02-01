@@ -1,29 +1,18 @@
 package com.axepert.kheloindiaqrscanner.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.axepert.kheloindiaqrscanner.databinding.ActivityLoginBinding;
-import com.axepert.kheloindiaqrscanner.model.request.LoginRequest;
-import com.axepert.kheloindiaqrscanner.model.response.LoginResponse;
-import com.axepert.kheloindiaqrscanner.network.ApiClient;
-import com.axepert.kheloindiaqrscanner.network.ApiServices;
 import com.axepert.kheloindiaqrscanner.utils.Constants;
 import com.axepert.kheloindiaqrscanner.utils.PreferenceManager;
 import com.axepert.kheloindiaqrscanner.viewmodel.LoginActivityViewModel;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
@@ -50,52 +39,26 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login(String email, String password) {
         isLoading(true);
-        try {
-            LoginRequest loginRequest = new LoginRequest(email, password);
-
-            ApiClient.getRetrofit().create(ApiServices.class).login(
-                    loginRequest
-            ).enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        if (response.body().code == 200) {
-                            preferenceManager.putString(Constants.KEY_USERNAME, response.body().data.getName());
-                            preferenceManager.putString(Constants.KEY_EMAIL, response.body().data.getEmail());
-                            preferenceManager.putString(Constants.KEY_PHONE, response.body().data.getPhone());
-                            preferenceManager.putString(Constants.KEY_IMAGE, response.body().data.getImage());
-                            preferenceManager.putString(Constants.KEY_USER_ID, response.body().data.getId());
-                            preferenceManager.putString(Constants.KEY_ACCESS_CODE, response.body().data.getAccess_code());
-                            preferenceManager.putString(Constants.KEY_IMAGE_BASE_URL, response.body().data.getBase_url());
-                            preferenceManager.putString(Constants.KEY_DEPARTMENT, response.body().data.getDepartment());
-                            preferenceManager.putBoolean(Constants.KEY_IS_LOGIN, true);
-                            isLoading(false);
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        } else {
-                            isLoading(false);
-                            showToast(response.body().message);
-                        }
-                    } else {
-                        isLoading(false);
-                        showToast("Something went wrong!");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    isLoading(false);
-                    showToast("Failed : " + t.getMessage());
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            isLoading(false);
-            showToast("Error : " + e.getMessage());
-        }
-
+        viewModel.getLoginData(email, password).observe(this, response -> {
+            if (response.code == 200) {
+                preferenceManager.putString(Constants.KEY_USERNAME, response.data.getName());
+                preferenceManager.putString(Constants.KEY_EMAIL, response.data.getEmail());
+                preferenceManager.putString(Constants.KEY_PHONE, response.data.getPhone());
+                preferenceManager.putString(Constants.KEY_IMAGE, response.data.getImage());
+                preferenceManager.putString(Constants.KEY_USER_ID, response.data.getId());
+                preferenceManager.putString(Constants.KEY_ACCESS_CODE, response.data.getAccess_code());
+                preferenceManager.putString(Constants.KEY_IMAGE_BASE_URL, response.data.getBase_url());
+                preferenceManager.putString(Constants.KEY_DEPARTMENT, response.data.getDepartment());
+                preferenceManager.putBoolean(Constants.KEY_IS_LOGIN, true);
+                isLoading(false);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                isLoading(false);
+                Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void isLoading(Boolean loading) {
@@ -131,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (preferenceManager.getBoolean(Constants.KEY_IS_LOGIN)) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
         }
     }
 }

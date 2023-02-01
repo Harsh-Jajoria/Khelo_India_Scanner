@@ -1,5 +1,8 @@
 package com.axepert.kheloindiaqrscanner.model.response;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class LoginResponse {
     public int code;
     public String message;

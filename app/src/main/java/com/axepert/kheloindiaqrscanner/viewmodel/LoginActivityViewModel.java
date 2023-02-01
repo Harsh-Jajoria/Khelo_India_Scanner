@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel;
 import com.axepert.kheloindiaqrscanner.model.response.LoginResponse;
 import com.axepert.kheloindiaqrscanner.repository.LoginActivityRepository;
 
+
 public class LoginActivityViewModel extends ViewModel {
-    private LoginActivityRepository loginActivityRepository;
+    private final LoginActivityRepository loginActivityRepository;
 
     public LoginActivityViewModel() {
         loginActivityRepository = new LoginActivityRepository();

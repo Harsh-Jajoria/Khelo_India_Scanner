@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/white"
     tools:context=".activities.ResultActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -40,19 +40,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/warningDialog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="10dp"
+                android:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/yellow_rounded_background"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -101,20 +103,21 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/successDialog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:visibility="gone"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="10dp"
+                android:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/green_rounded_background"
+                    android:background="@color/green_dark"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -140,7 +143,7 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="16dp"
                         android:text="Access Granted"
-                        android:textColor="@color/green_dark"
+                        android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -153,8 +156,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginBottom="16dp"
-                        android:text="Welcome you can visit the place."
-                        android:textColor="@color/green_dark"
+                        android:text="Welcome you can visit the zone."
+                        android:textColor="@color/white"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -163,15 +166,16 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/errorDialog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:visibility="gone"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="10dp"
+                android:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -203,7 +207,7 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="16dp"
                         android:text="Access Denied"
-                        android:textColor="@color/red_dark"
+                        android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -217,7 +221,7 @@
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginBottom="16dp"
                         android:text="You don't have the access to visit this place."
-                        android:textColor="@color/red_dark"
+                        android:textColor="@color/white"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -226,15 +230,16 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                app:cardBackgroundColor="@color/color_yellow"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -276,12 +281,22 @@
                         app:layout_constraintStart_toEndOf="@id/viewHelper"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <ImageView
+                        android:id="@+id/imgProfileBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_marginTop="50dp"
+                        android:background="@drawable/background_image"
+                        android:contentDescription="@string/app_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/viewHelper" />
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/whiteStrip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
-                        android:background="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -299,11 +314,12 @@
 
                         <ImageView
                             android:layout_width="120dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="50dp"
                             android:layout_margin="12dp"
                             android:adjustViewBounds="true"
+                            android:background="@color/white"
                             android:contentDescription="@string/app_name"
-                            android:src="@drawable/tagline"
+                            android:src="@drawable/g20_logo"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -311,28 +327,24 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <ImageView
-                        android:id="@+id/imgProfileBackground"
-                        android:layout_width="match_parent"
-                        android:layout_height="170dp"
-                        android:contentDescription="@string/app_name"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/pattern"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/whiteStrip" />
-
-                    <ImageView
                         android:id="@+id/imgProfileImage"
                         android:layout_width="120dp"
                         android:layout_height="150dp"
-                        android:layout_marginBottom="-15dp"
-                        android:background="@color/white"
                         android:contentDescription="@string/app_name"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/profile_image"
                         app:layout_constraintBottom_toBottomOf="@+id/imgProfileBackground"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
+
+                    <ProgressBar
+                        android:id="@+id/imgProgress"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:indeterminateTint="@color/white"
+                        app:layout_constraintTop_toTopOf="@id/imgProfileImage"
+                        app:layout_constraintBottom_toBottomOf="@id/imgProfileImage"
+                        app:layout_constraintStart_toStartOf="@id/imgProfileImage"
+                        app:layout_constraintEnd_toEndOf="@id/imgProfileImage"/>
 
                     <TextView
                         android:id="@+id/tvName"
@@ -374,31 +386,80 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvSports" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/tvAccessCode"
+                    <LinearLayout
+                        android:id="@+id/llCenter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:background="@drawable/center_layout_box"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="10dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvState"
-                        tools:listitem="@layout/item_image" />
+                        app:layout_constraintTop_toBottomOf="@id/tvState">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/tvAccessCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginHorizontal="20dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:itemCount="4"
+                            tools:listitem="@layout/item_image" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp">
+
+                            <ImageView
+                                android:id="@+id/dineImage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:adjustViewBounds="true"
+                                />
+
+                            <TextView
+                                android:id="@+id/tvTransport"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_centerInParent="true"
+                                android:layout_marginHorizontal="20dp"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvVenue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:textColor="@color/primary_text"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:background="@color/color_green"
                         android:gravity="center"
                         android:paddingVertical="8dp"
-                        android:text="IOA"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="28sp"
                         android:textStyle="bold"
-                        app:layout_constraintTop_toBottomOf="@id/tvAccessCode" />
+                        app:layout_constraintTop_toBottomOf="@id/llCenter" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -414,9 +475,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminateTint="@color/color_yellow"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabScanNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next Scan"
+        app:icon="@drawable/ic_qr_code_scanner"
+        app:iconTint="@color/white"
+        app:backgroundTint="@color/dark_blue"
+        android:textColor="@color/white"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="15dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -14,4 +14,5 @@
     <string name="login_text">WELCOME\nLOGIN TO CONTINUE</string>
     <string name="email">Email Address</string>
     <string name="password">Password</string>
+    <string name="login">Login</string>
 </resources>

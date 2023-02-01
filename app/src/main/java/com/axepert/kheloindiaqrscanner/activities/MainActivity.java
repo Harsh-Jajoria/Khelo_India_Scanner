@@ -1,13 +1,24 @@
 package com.axepert.kheloindiaqrscanner.activities;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 
 import com.axepert.kheloindiaqrscanner.R;
 import com.axepert.kheloindiaqrscanner.databinding.ActivityMainBinding;
@@ -18,10 +29,11 @@ import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
+import com.journeyapps.barcodescanner.CaptureActivity;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -35,8 +47,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         preferenceManager = new PreferenceManager(this);
+        requestPermission();
         setProfileValues();
         setListener();
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 101);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Camera permission required")
+                        .setPositiveButton("Allow", (dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("Don't Allow", (dialog, which) -> dialog.dismiss()).show();
+            }
+        }
     }
 
     private void setProfileValues() {
@@ -63,7 +94,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setListener() {
-        binding.btnScanner.setOnClickListener(v -> startScanner());
+        binding.btnScanner.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 101);
+            } else {
+                scanCode();
+            }
+        });
         binding.imgLogout.setOnClickListener(v -> {
             preferenceManager.clear();
             startActivity(new Intent(MainActivity.this, LoginActivity.class)
@@ -71,54 +108,43 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startScanner() {
-        GmsBarcodeScannerOptions.Builder optionsBuilder = new GmsBarcodeScannerOptions.Builder();
-        GmsBarcodeScanner gmsBarcodeScanner =
-                GmsBarcodeScanning.getClient(this, optionsBuilder.build());
-        gmsBarcodeScanner
-                .startScan()
-                .addOnSuccessListener(barcode -> {
-                    Log.d(TAG, "Success: " + getSuccessfulMessage(barcode));
-                    Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                    intent.putExtra(Constants.KEY_RESULT, getSuccessfulMessage(barcode));
-                    startActivity(intent);
-                })
-                .addOnFailureListener(e -> {
-                    Log.d(TAG, "Failure: " + getErrorMessage(e));
-                })
-                .addOnCanceledListener(() -> {
-                    Log.d(TAG, "Error: " + getString(R.string.error_scanner_cancelled));
-                });
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    private String getSuccessfulMessage(Barcode barcode) {
-        String barcodeValue = barcode.getDisplayValue();
-        return barcodeValue;
-    }
-
-    private String getErrorMessage(Exception e) {
-        if (e instanceof MlKitException) {
-            switch (((MlKitException) e).getErrorCode()) {
-                case MlKitException.CODE_SCANNER_CAMERA_PERMISSION_NOT_GRANTED:
-                    return getString(R.string.error_camera_permission_not_granted);
-                case MlKitException.CODE_SCANNER_APP_NAME_UNAVAILABLE:
-                    return getString(R.string.error_app_name_unavailable);
-                default:
-                    return getString(R.string.error_default_message, e);
+    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == 101) {
+                    Intent intent = result.getData();
+                    if (intent != null) {
+                        int resultFromIntent = intent.getIntExtra("newCode", -1);
+                        if (resultFromIntent == 1) {
+                            scanCode();
+                        }
+                    }
+                }
             }
-        } else {
-            return e.getMessage();
-        }
+    );
+
+    private void scanCode() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("");
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        options.setCaptureActivity(CaptureAct.class);
+        resultLauncher.launch(options);
     }
+
+    private final ActivityResultLauncher<ScanOptions> resultLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if (result.getContents() != null) {
+                    if (result.getContents().contains("KIYG2022")) {
+                        Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                        intent.putExtra(Constants.KEY_RESULT, result.getContents());
+                        launcher.launch(intent);
+                    } else {
+                        Toast.makeText(this, "QR Code is not valid!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+    );
 
 }

@@ -19,3 +19,21 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.axepert.kheloindiaqrscanner.model.request.ScanRequest
+-keep class com.axepert.kheloindiaqrscanner.model.request.LoginRequest
+-keep class com.axepert.kheloindiaqrscanner.model.response.ScanResponse
+-keep class com.axepert.kheloindiaqrscanner.model.response.LoginResponse
+
+# Platform calls Class.forName on types which do not exist on Android to determine platform.
+-dontnote retrofit2.Platform
+# Platform used when running on Java 8 VMs. Will not be used at runtime.
+-dontwarn retrofit2.Platform$Android$MainThreadExecutor
+# Retain generic type information for use by reflection by converters and adapters.
+-keepattributes Signature
+# Retain declared checked exceptions for use by a Proxy instance.
+-keepattributes Exceptions
+
+-dontwarn okio.**
+
+-dontwarn com.squareup.picasso.**

@@ -1,13 +1,18 @@
 package com.axepert.kheloindiaqrscanner.model.request;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class ScanRequest {
     private String user_id;
     private String access_code;
-    private String uid;
+    private String name;
+    private String image;
 
-    public ScanRequest(String user_id, String access_code, String uid) {
+    public ScanRequest(String user_id, String access_code, String name, String image) {
         this.user_id = user_id;
         this.access_code = access_code;
-        this.uid = uid;
+        this.name = name;
+        this.image = image;
     }
 }

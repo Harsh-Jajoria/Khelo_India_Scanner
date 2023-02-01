@@ -14,7 +14,7 @@ public interface ApiServices {
     @POST("login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
-    @POST("details")
+    @POST("details2")
     Call<ScanResponse> scanResponse(@Body ScanRequest scanRequest);
 
 }
