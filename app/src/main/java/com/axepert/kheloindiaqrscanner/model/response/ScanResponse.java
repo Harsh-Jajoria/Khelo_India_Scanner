@@ -10,6 +10,7 @@ public class ScanResponse {
     public String message;
     public Data data;
 
+    @Keep
     public class Data {
         public String name;
         public String sportname;
@@ -77,6 +78,7 @@ public class ScanResponse {
             return category;
         }
 
+        @Keep
         public class Access {
             public String image;
             public String text;

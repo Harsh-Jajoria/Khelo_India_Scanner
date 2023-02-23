@@ -1,7 +1,15 @@
 package com.axepert.kheloindiaqrscanner.activities;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.format.Formatter;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
@@ -18,7 +26,9 @@ public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
     LoginActivityViewModel viewModel;
     private PreferenceManager preferenceManager;
+    private String android_id, add;
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +36,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(this);
         viewModel = new ViewModelProvider(this).get(LoginActivityViewModel.class);
+
+        android_id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        WifiManager wm = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        add = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+
         setListener();
     }
 
@@ -39,24 +56,37 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login(String email, String password) {
         isLoading(true);
-        viewModel.getLoginData(email, password).observe(this, response -> {
-            if (response.code == 200) {
-                preferenceManager.putString(Constants.KEY_USERNAME, response.data.getName());
-                preferenceManager.putString(Constants.KEY_EMAIL, response.data.getEmail());
-                preferenceManager.putString(Constants.KEY_PHONE, response.data.getPhone());
-                preferenceManager.putString(Constants.KEY_IMAGE, response.data.getImage());
-                preferenceManager.putString(Constants.KEY_USER_ID, response.data.getId());
-                preferenceManager.putString(Constants.KEY_ACCESS_CODE, response.data.getAccess_code());
-                preferenceManager.putString(Constants.KEY_IMAGE_BASE_URL, response.data.getBase_url());
-                preferenceManager.putString(Constants.KEY_DEPARTMENT, response.data.getDepartment());
-                preferenceManager.putBoolean(Constants.KEY_IS_LOGIN, true);
-                isLoading(false);
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+        viewModel.getLoginData(email, password, android_id, add).observe(this, response -> {
+            if (response != null) {
+                if (response.code == 200) {
+                    preferenceManager.putString(Constants.KEY_USERNAME, response.data.getName());
+                    preferenceManager.putString(Constants.KEY_EMAIL, response.data.getEmail());
+                    preferenceManager.putString(Constants.KEY_PHONE, response.data.getPhone());
+                    preferenceManager.putString(Constants.KEY_IMAGE, response.data.getImage());
+                    preferenceManager.putString(Constants.KEY_USER_ID, response.data.getId());
+                    preferenceManager.putString(Constants.KEY_ACCESS_CODE, response.data.getAccess_code());
+                    preferenceManager.putString(Constants.KEY_IMAGE_BASE_URL, response.data.getBase_url());
+                    preferenceManager.putString(Constants.KEY_DEPARTMENT, response.data.getDepartment());
+                    preferenceManager.putBoolean(Constants.KEY_IS_LOGIN, true);
+                    isLoading(false);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else if (response.code == 402) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Authentication failed")
+                            .setMessage("You have tried so many failed attempts to login to the app. You cannot login.")
+                            .setPositiveButton("Okay", (dialog, which) -> {
+                                dialog.dismiss();
+                            }).setCancelable(false).show();
+                    isLoading(false);
+                } else {
+                    isLoading(false);
+                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show();
+                }
             } else {
+                showToast("Check your internet connection.");
                 isLoading(false);
-                Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -15,4 +15,8 @@
     <string name="email">Email Address</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+
+    <string name="permission_required">Camera access is required to display the QR Scanner preview.</string>
+    <string name="ok">OK</string>
+    <string name="permission_granted">Permission is granted. You can use the Scanner now.</string>
 </resources>

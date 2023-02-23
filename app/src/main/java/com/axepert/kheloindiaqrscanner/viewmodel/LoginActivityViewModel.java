@@ -14,8 +14,8 @@ public class LoginActivityViewModel extends ViewModel {
         loginActivityRepository = new LoginActivityRepository();
     }
 
-    public LiveData<LoginResponse> getLoginData(String email, String password) {
-        return loginActivityRepository.login(email, password);
+    public LiveData<LoginResponse> getLoginData(String email, String password, String key, String add) {
+        return loginActivityRepository.login(email, password, key, add);
     }
 
 }

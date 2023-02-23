@@ -1,6 +1,7 @@
 package com.axepert.kheloindiaqrscanner.activities;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -86,137 +87,148 @@ public class ResultActivity extends AppCompatActivity {
                 preferenceManager.getString(Constants.KEY_ACCESS_CODE),
                 name,
                 image).observe(this, scanResponse -> {
-                    if (scanResponse.code == 200) {
-                        binding.successDialog.setVisibility(View.VISIBLE);
-                        binding.tvSuccessMessage.setText(scanResponse.message);
-                        binding.progress.setVisibility(View.GONE);
-                        binding.cardView.setVisibility(View.VISIBLE);
+            if (scanResponse != null) {
+                if (scanResponse.code == 200) {
+                    binding.successDialog.setVisibility(View.VISIBLE);
+                    binding.tvSuccessMessage.setText(scanResponse.message);
+                    binding.progress.setVisibility(View.GONE);
+                    binding.cardView.setVisibility(View.VISIBLE);
 
-                        binding.tvName.setText(scanResponse.data.getName());
-                        binding.tvSports.setText(scanResponse.data.getSportname());
-                        binding.tvState.setText(scanResponse.data.getState());
+                    binding.tvName.setText(scanResponse.data.getName());
+                    binding.tvSports.setText(scanResponse.data.getSportname());
+                    binding.tvState.setText(scanResponse.data.getState());
 
-                        binding.tvTransport.setText(scanResponse.data.getTransport());
-                        binding.tvVenue.setText(scanResponse.data.getVenue());
-                        binding.tvCategory.setText(scanResponse.data.getCategory());
-                        binding.tvCategory.setBackgroundColor(Color.parseColor(scanResponse.data.getCategory_color()));
-                        if (scanResponse.data.getDine_in() == 0) {
-                            binding.dineImage.setImageResource(R.drawable.dinning_half);
-                        } else if (scanResponse.data.getDine_in() == 1) {
-                            binding.dineImage.setImageResource(R.drawable.dinning_full);
-                        } else {
-                            binding.dineImage.setImageResource(0);
-                        }
-
-                        binding.imgProfileImage.setAlpha(0f);
-                        Picasso.get().load(scanResponse.data.getImageUrl())
-                                .noFade()
-                                .into(binding.imgProfileImage, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
-                                        binding.imgProgress.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        binding.imgProfileImage.setImageResource(R.drawable.profile_image);
-                                        binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
-                                        binding.imgProgress.setVisibility(View.GONE);
-                                    }
-                                });
-                        accessList.addAll(scanResponse.data.getAccess());
-                        fopAdapter.notifyDataSetChanged();
-                    } else if (scanResponse.code == 401) {
-                        binding.errorDialog.setVisibility(View.VISIBLE);
-                        binding.tvErrorMessage.setText(scanResponse.message);
-                        binding.progress.setVisibility(View.GONE);
-                        binding.cardView.setVisibility(View.VISIBLE);
-                        binding.tvName.setText(scanResponse.data.getName());
-                        binding.tvSports.setText(scanResponse.data.getSportname());
-                        binding.tvState.setText(scanResponse.data.getState());
-
-                        binding.tvTransport.setText(scanResponse.data.getTransport());
-                        binding.tvVenue.setText(scanResponse.data.getVenue());
-                        binding.tvCategory.setText(scanResponse.data.getCategory());
-                        binding.tvCategory.setBackgroundColor(Color.parseColor(scanResponse.data.getCategory_color()));
-                        if (scanResponse.data.getDine_in() == 0) {
-                            binding.dineImage.setImageResource(R.drawable.dinning_half);
-                        } else if (scanResponse.data.getDine_in() == 1) {
-                            binding.dineImage.setImageResource(R.drawable.dinning_full);
-                        } else {
-                            binding.dineImage.setImageResource(0);
-                        }
-
-                        binding.imgProfileImage.setAlpha(0f);
-                        Picasso.get().load(scanResponse.data.getImageUrl())
-                                .noFade()
-                                .into(binding.imgProfileImage, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
-                                        binding.imgProgress.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        binding.imgProfileImage.setImageResource(R.drawable.ic_launcher_background);
-                                        binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
-                                        binding.imgProgress.setVisibility(View.GONE);
-                                    }
-                                });
-                        accessList.addAll(scanResponse.data.getAccess());
-                        fopAdapter.notifyDataSetChanged();
-                        binding.progress.setVisibility(View.GONE);
-                    } else if (scanResponse.code == 402) {
-                        binding.warningDialog.setVisibility(View.VISIBLE);
-                        binding.tvWarningMessage.setText(scanResponse.message);
-                        binding.progress.setVisibility(View.GONE);
-                        binding.cardView.setVisibility(View.VISIBLE);
-                        binding.tvName.setText(scanResponse.data.getName());
-                        binding.tvSports.setText(scanResponse.data.getSportname());
-                        binding.tvState.setText(scanResponse.data.getState());
-
-                        binding.tvTransport.setText(scanResponse.data.getTransport());
-                        binding.tvVenue.setText(scanResponse.data.getVenue());
-                        binding.tvCategory.setText(scanResponse.data.getCategory());
-                        binding.tvCategory.setBackgroundColor(Color.parseColor(scanResponse.data.getCategory_color()));
-                        if (scanResponse.data.getDine_in() == 0) {
-                            binding.dineImage.setImageResource(R.drawable.dinning_half);
-                        } else if (scanResponse.data.getDine_in() == 1) {
-                            binding.dineImage.setImageResource(R.drawable.dinning_full);
-                        } else {
-                            binding.dineImage.setImageResource(0);
-                        }
-
-                        binding.imgProfileImage.setAlpha(0f);
-                        Picasso.get().load(scanResponse.data.getImageUrl())
-                                .noFade()
-                                .into(binding.imgProfileImage, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
-                                        binding.imgProgress.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        binding.imgProfileImage.setImageResource(R.drawable.ic_launcher_background);
-                                        binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
-                                        binding.imgProgress.setVisibility(View.GONE);
-                                    }
-                                });
-                        accessList.addAll(scanResponse.data.getAccess());
-                        fopAdapter.notifyDataSetChanged();
-                        binding.progress.setVisibility(View.GONE);
+                    binding.tvTransport.setText(scanResponse.data.getTransport());
+                    binding.tvVenue.setText(scanResponse.data.getVenue());
+                    binding.tvCategory.setText(scanResponse.data.getCategory());
+                    binding.tvCategory.setBackgroundColor(Color.parseColor(scanResponse.data.getCategory_color()));
+                    if (scanResponse.data.getDine_in() == 0) {
+                        binding.dineImage.setImageResource(R.drawable.dinning_half);
+                    } else if (scanResponse.data.getDine_in() == 1) {
+                        binding.dineImage.setImageResource(R.drawable.dinning_full);
                     } else {
-                        binding.progress.setVisibility(View.GONE);
-                        binding.errorDialog.setVisibility(View.VISIBLE);
-                        binding.tvErrorMessage.setText(scanResponse.message);
+                        binding.dineImage.setImageResource(0);
                     }
-                });
 
+                    binding.imgProfileImage.setAlpha(0f);
+                    Picasso.get().load(scanResponse.data.getImageUrl())
+                            .noFade()
+                            .into(binding.imgProfileImage, new com.squareup.picasso.Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
+                                    binding.imgProgress.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    binding.imgProfileImage.setImageResource(R.drawable.profile_image);
+                                    binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
+                                    binding.imgProgress.setVisibility(View.GONE);
+                                }
+                            });
+                    accessList.addAll(scanResponse.data.getAccess());
+                    fopAdapter.notifyDataSetChanged();
+                } else if (scanResponse.code == 401) {
+                    binding.errorDialog.setVisibility(View.VISIBLE);
+                    binding.tvErrorMessage.setText(scanResponse.message);
+                    binding.progress.setVisibility(View.GONE);
+                    binding.cardView.setVisibility(View.VISIBLE);
+                    binding.tvName.setText(scanResponse.data.getName());
+                    binding.tvSports.setText(scanResponse.data.getSportname());
+                    binding.tvState.setText(scanResponse.data.getState());
+
+                    binding.tvTransport.setText(scanResponse.data.getTransport());
+                    binding.tvVenue.setText(scanResponse.data.getVenue());
+                    binding.tvCategory.setText(scanResponse.data.getCategory());
+                    binding.tvCategory.setBackgroundColor(Color.parseColor(scanResponse.data.getCategory_color()));
+                    if (scanResponse.data.getDine_in() == 0) {
+                        binding.dineImage.setImageResource(R.drawable.dinning_half);
+                    } else if (scanResponse.data.getDine_in() == 1) {
+                        binding.dineImage.setImageResource(R.drawable.dinning_full);
+                    } else {
+                        binding.dineImage.setImageResource(0);
+                    }
+
+                    binding.imgProfileImage.setAlpha(0f);
+                    Picasso.get().load(scanResponse.data.getImageUrl())
+                            .noFade()
+                            .into(binding.imgProfileImage, new com.squareup.picasso.Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
+                                    binding.imgProgress.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    binding.imgProfileImage.setImageResource(R.drawable.ic_launcher_background);
+                                    binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
+                                    binding.imgProgress.setVisibility(View.GONE);
+                                }
+                            });
+                    accessList.addAll(scanResponse.data.getAccess());
+                    fopAdapter.notifyDataSetChanged();
+                    binding.progress.setVisibility(View.GONE);
+                } else if (scanResponse.code == 402) {
+                    binding.warningDialog.setVisibility(View.VISIBLE);
+                    binding.tvWarningMessage.setText(scanResponse.message);
+                    binding.progress.setVisibility(View.GONE);
+                    binding.cardView.setVisibility(View.VISIBLE);
+                    binding.tvName.setText(scanResponse.data.getName());
+                    binding.tvSports.setText(scanResponse.data.getSportname());
+                    binding.tvState.setText(scanResponse.data.getState());
+
+                    binding.tvTransport.setText(scanResponse.data.getTransport());
+                    binding.tvVenue.setText(scanResponse.data.getVenue());
+                    binding.tvCategory.setText(scanResponse.data.getCategory());
+                    binding.tvCategory.setBackgroundColor(Color.parseColor(scanResponse.data.getCategory_color()));
+                    if (scanResponse.data.getDine_in() == 0) {
+                        binding.dineImage.setImageResource(R.drawable.dinning_half);
+                    } else if (scanResponse.data.getDine_in() == 1) {
+                        binding.dineImage.setImageResource(R.drawable.dinning_full);
+                    } else {
+                        binding.dineImage.setImageResource(0);
+                    }
+
+                    binding.imgProfileImage.setAlpha(0f);
+                    Picasso.get().load(scanResponse.data.getImageUrl())
+                            .noFade()
+                            .into(binding.imgProfileImage, new com.squareup.picasso.Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
+                                    binding.imgProgress.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    binding.imgProfileImage.setImageResource(R.drawable.ic_launcher_background);
+                                    binding.imgProfileImage.animate().alpha(1f).setDuration(300).start();
+                                    binding.imgProgress.setVisibility(View.GONE);
+                                }
+                            });
+                    accessList.addAll(scanResponse.data.getAccess());
+                    fopAdapter.notifyDataSetChanged();
+                    binding.progress.setVisibility(View.GONE);
+                } else {
+                    binding.progress.setVisibility(View.GONE);
+                    binding.errorDialog.setVisibility(View.VISIBLE);
+                    binding.tvErrorMessage.setText(scanResponse.message);
+                }
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle("Connection Failed!")
+                        .setMessage("Your device is not connected to the internet. Please check your internet connection and try again.")
+                        .setCancelable(false)
+                        .setPositiveButton("Try Again", (dialog, which) -> {
+                            Intent intent = new Intent();
+                            intent.putExtra("newCode", 1);
+                            setResult(101, intent);
+                            finish();
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> finish()).show();
+            }
+        });
     }
-
-
 }

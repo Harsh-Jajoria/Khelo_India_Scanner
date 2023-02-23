@@ -1,6 +1,5 @@
 package com.axepert.kheloindiaqrscanner.repository;
 
-import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,9 +20,9 @@ public class LoginActivityRepository {
         apiServices = ApiClient.getRetrofit().create(ApiServices.class);
     }
 
-    public LiveData<LoginResponse> login(String email, String password) {
+    public LiveData<LoginResponse> login(String email, String password, String key, String add) {
         MutableLiveData<LoginResponse> data = new MutableLiveData<>();
-        LoginRequest loginRequest = new LoginRequest(email, password);
+        LoginRequest loginRequest = new LoginRequest(email, password, key, add);
 
         apiServices.login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override

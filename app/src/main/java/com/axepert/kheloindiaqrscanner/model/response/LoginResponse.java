@@ -8,6 +8,7 @@ public class LoginResponse {
     public String message;
     public Data data;
 
+    @Keep
     public class Data {
         public String id;
         public String name;

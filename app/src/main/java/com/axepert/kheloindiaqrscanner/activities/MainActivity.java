@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,11 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.axepert.kheloindiaqrscanner.R;
 import com.axepert.kheloindiaqrscanner.databinding.ActivityMainBinding;
 import com.axepert.kheloindiaqrscanner.utils.Constants;
 import com.axepert.kheloindiaqrscanner.utils.PreferenceManager;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.mlkit.common.MlKitException;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
@@ -103,8 +106,9 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.imgLogout.setOnClickListener(v -> {
             preferenceManager.clear();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -141,7 +145,11 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra(Constants.KEY_RESULT, result.getContents());
                         launcher.launch(intent);
                     } else {
-                        Toast.makeText(this, "QR Code is not valid!", Toast.LENGTH_SHORT).show();
+                        new AlertDialog.Builder(this)
+                                .setTitle("Invalid QR Code")
+                                .setMessage("QR Code is not valid please scan the correct QR Code.")
+                                .setPositiveButton("Scan now", (dialog, which) -> scanCode())
+                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss()).show();
                     }
                 }
             }
